@@ -1,0 +1,55 @@
+version: "3.7"
+services:
+
+  sveltekit:
+    image: sveltekit
+    restart: on-failure
+    build:
+      context: ./sveltekit
+      dockerfile: ./Dockerfile.dev
+    ports:
+      - 24678:24678
+      - 3000:3000
+    volumes:
+      - ./sveltekit/:/usr/src/app
+      - /usr/src/app/node_modules
+      
+  zero1:
+    image: dgraph/dgraph:${DGRAPH_VERSION}
+    container_name: zero1
+    working_dir: /data/zero1
+    labels:
+      cluster: flock-cluster
+    ports:
+    - 5080:5080
+    - 6080:6080
+    volumes:
+    - type: bind
+      source: $DATA_DIR
+      target: /data
+      read_only: false
+    command: dgraph zero --my=zero1:5080
+
+  alpha1:
+    image: dgraph/dgraph:${DGRAPH_VERSION}
+    container_name: alpha1
+    working_dir: /data/alpha1
+    labels:
+      cluster: flock-cluster
+    ports:
+    - 8080:8080
+    - 9080:9080
+    volumes:
+    - type: bind
+      source: $DATA_DIR
+      target: /data
+      read_only: false
+    command: dgraph alpha --my=alpha1:8080 --zero=zero1:5080
+  ratel:
+    image: dgraph/ratel:${DGRAPH_VERSION}
+    container_name: ratel
+    labels:
+      cluster: flock-cluster
+    ports:
+    - 8000:8000
+    command: dgraph-ratel
