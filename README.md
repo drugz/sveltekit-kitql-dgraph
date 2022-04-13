@@ -12,6 +12,9 @@ docker-compose -f docker-compose.dev.yml up -d
 The fastest way to build cybernetically enhanced web apps
 
 [http://localhost:3000/](http://localhost:3000/)
+
+Starter CRUD
+🕒 in work
 #
 
 ## KitQL
