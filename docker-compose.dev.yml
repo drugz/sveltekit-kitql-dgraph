@@ -2,14 +2,16 @@ version: "3.7"
 services:
 
   sveltekit:
-    image: sveltekit
+    container_name: sveltekit
     restart: on-failure
     build:
       context: ./sveltekit
       dockerfile: ./Dockerfile.dev
+    # environment:
+    #   - DGRAPH_HOST=http://dgraph-server:9080
     ports:
-      - 24678:24678
       - 3000:3000
+      - 24678:24678
     volumes:
       - ./sveltekit/:/usr/src/app
       - /usr/src/app/node_modules
